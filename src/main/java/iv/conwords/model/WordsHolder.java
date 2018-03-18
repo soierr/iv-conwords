@@ -12,7 +12,14 @@ import java.util.Map;
  */
 public class WordsHolder {
 	
-	private int minWordCount = 16;
+	/*Empirically obtained value. We know for sure
+	 * that there is definitely a word with less length in every range
+	 * of dictionary for "a" is "aa" that is 2, so that we rewrite this value for sure
+	 * during dictionary processing
+	 * */
+	private final int MIN_WORD_COUNT = 32; 
+	
+	private int minWordCount = MIN_WORD_COUNT;
 	
 	private Map<String, Integer> map = new HashMap<>();
 

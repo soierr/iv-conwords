@@ -60,7 +60,7 @@ public class CallableResultTest{
 	public void callTest(){
 		
 		CallableLetterProcessing callable = new CallableLetterProcessing('a', dictionary);		
-		int i = callable.isConcatWord("abater", "abater".length(), dictionary);
+		int i = callable.isConcatWord("aah", "aah".length(), dictionary);
 		System.out.println(i);
 		
 	}

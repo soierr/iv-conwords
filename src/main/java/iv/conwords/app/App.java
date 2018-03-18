@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,60 +32,78 @@ public class App{
     	
     	List<Future<CallablerResult>> listFuture = new ArrayList<>();
     	
-    	for(char c : ALPHABET){
+    	for(char aLetter : ALPHABET){
     		
-    		future = es.submit(new CallableLetterProcessing(c, dictionary));
+    		future = es.submit(new CallableLetterProcessing(aLetter, dictionary));
     		listFuture.add(future);
     	}
     	
     	es.shutdown();
     	
-    	while(!es.isShutdown()){
-    		
-    	}
+    	while(!es.isShutdown()){}
     	
-    	String maxString = "";
+    	List<String> list = new ArrayList<>();
+    	
+    	int conWordsCount = 0;
     	
     	for(Future<CallablerResult> f : listFuture){
 
-    		if(maxString.length() < f.get().getConWordFirst().length()){
-    			maxString = f.get().getConWordFirst();
-    		}
+    		list.add(f.get().getConWordFirst());
+    		list.add(f.get().getConWordSecond());
+    		conWordsCount = conWordsCount + f.get().getConWordTotal();
     	}
     	
-    	System.out.println(maxString);
+    	Collections.sort(list, new Comparator<String>() {
+    		
+
+    		@Override
+    		public int compare(String o1, String o2) {
+    			return o2.length() - o1.length();
+    		}
+		});
     	
+    	System.out.printf("\nFirst largest concatenated word:  \"%s\"", list.get(0));
+    	System.out.printf(" Length: %s\n\n", list.get(0).length());
+    	
+    	System.out.printf("Second largest concatenated word: \"%s\"", list.get(1));
+    	System.out.printf("   Length: %s\n\n", list.get(1).length());
+    	
+    	System.out.printf("Concatenated words found: %s\n", conWordsCount);
     }
     
     private static Map<Character, WordsHolder> loadWords() throws IOException{
     	
     	BufferedReader br = new BufferedReader(new FileReader(new File(FILE_NAME)));
     	
-    	String s;
-    	char tc = 0;
+    	String stringLine;
+    	char dictionaryLetter = 0;
     	int minCount = 0;
     	
     	Map<Character, WordsHolder> dictionary = new HashMap<Character, WordsHolder>();
     	
-    	for(char nc : ALPHABET){
+    	WordsHolder wordsHolder = null;
+    	
+    	for(char aLetter : ALPHABET){
     		
-    		dictionary.put(nc, new WordsHolder());
+    		dictionary.put(aLetter, new WordsHolder());
     	}
     	
-    	while((s = br.readLine())!=null){
+    	while((stringLine = br.readLine())!=null){
     		
-    		if(!s.isEmpty()){    			
-    			tc = s.charAt(0);    			
+    		if(!stringLine.isEmpty()){    			
+    			dictionaryLetter = stringLine.charAt(0);    			
     		}else{
     			continue;
     		}
     		
-    		if((minCount = s.length()) < dictionary.get(tc).getMinWordCount()){
+    		wordsHolder = dictionary.get(dictionaryLetter);
+    		
+    		if((minCount = stringLine.length()) < wordsHolder.getMinWordCount()){
 
-    			dictionary.get(tc).setMinWordCount(minCount);
+    			wordsHolder.setMinWordCount(minCount);
     		}
     		
-    		dictionary.get(tc).addWord(s);
+    		wordsHolder.addWord(stringLine);
     	}
     	
     	br.close();

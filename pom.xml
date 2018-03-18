@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>iv.conword</groupId>
-  <artifactId>iv-conword</artifactId>
+  <artifactId>iv-conwords</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
-  <name>iv-conword</name>
+  <name>iv-conwords</name>
   <url>http://maven.apache.org</url>
   <dependencies>
 	<dependency>
@@ -67,7 +67,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-				    <finalName>iv-convwords</finalName>
+				    <finalName>iv-conwords</finalName>
 					<descriptors>
 						<descriptor>/resources/config-jar.xml</descriptor>
 					</descriptors>

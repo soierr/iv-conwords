@@ -19,7 +19,7 @@ import iv.conwords.model.WordsHolder;
  */
 public class CallableLetterProcessing implements Callable<CallablerResult>{
 	
-	private Character targetRange = null;
+	private Character targetLetter = null;
 	
 	private Map<Character, WordsHolder> dictionary = null;
 	
@@ -29,35 +29,36 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 	
 	private boolean isSearchCompleted = false;
 	
-	/**
-	 * 
+	/*
+	 *Every callable task is aimed to process a proper range of words
+	 *started from the same letter 
 	 */
 	public CallableLetterProcessing(Character target, Map<Character, WordsHolder> dictionary) {
 		
-		this.targetRange = target;
+		this.targetLetter = target;
 		this.dictionary = dictionary;
 	}
 	
 	public CallablerResult call() throws Exception {
 		
-		Map<String, Integer> map = dictionary.get(targetRange).getMap();
+		Map<String, Integer> map = dictionary.get(targetLetter).getMap();
 		
 		Set<Map.Entry<String, Integer>> entrySet = map.entrySet();
 		
 		int maxCount = 0, count = 0;
 		
-		String str = null;
+		String targetString = null, firstConWord = null, secondConWord = null;		
 		
 		for(Map.Entry<String, Integer> entry : entrySet){
 			
-			str = entry.getKey();
+			targetString = entry.getKey();
 			
-			count = isConcatWord(str, entry.getValue(), dictionary);
+			count = isConcatWord(targetString, entry.getValue(), dictionary);
 			
 			if(count > 0){
 				
 				maxCount++;
-				conWordsList.add(str);
+				conWordsList.add(targetString);
 			}
 			
 		}
@@ -73,13 +74,25 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 				
 			});
 			
-			return new CallablerResult(conWordsList.get(0), conWordsList.get(1), maxCount);
+			firstConWord = conWordsList.get(0);
+			
+			for(String s : conWordsList){
+
+				if(s.length() < firstConWord.length()){
+					
+					secondConWord = s;
+					break;
+				}
+			}
+			
+			return new CallablerResult(firstConWord, secondConWord, maxCount);
 		}
     	
 		return null;
 	}
 	
-	public int isConcatWord(String str, int len, Map<Character, WordsHolder> dictionary){
+	/*package private for tests otherwise needs to be private*/
+	int isConcatWord(String str, int len, Map<Character, WordsHolder> dictionary){
 
     	WordsHolder wHolder = dictionary.get(str.charAt(0));
     	int minWordLength = wHolder.getMinWordCount();
@@ -106,7 +119,7 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 			}
 			
     	}
-		
+
 		return 0;
 	}
 	
@@ -140,12 +153,11 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 		while((i < len) && !isSearchCompleted && sum + strBufLen != len){
 
 			strBuf = sb.substring(ci, i+1);
-			//wHolder.getMap().containsKey(strBuf)
+			
 			strBufLen = (wHolder.getMap().get(strBuf) == null) ? Integer.valueOf(0) : wHolder.getMap().get(strBuf);
 			
 			if(strBufLen != null && strBufLen.intValue() > 0){
 				
-				//strBufLen = strBuf.length();
 				if((strBufLen+sum) == len){
 					
 					isSearchCompleted = true;
