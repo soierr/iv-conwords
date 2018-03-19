@@ -114,7 +114,7 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 				
 				if(isSearchCompleted){
 					isSearchCompleted = false;
-					return str.length();
+					return len;
 				}
 			}
 			
@@ -155,8 +155,8 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 			strBuf = sb.substring(ci, i+1);
 			
 			strBufLen = (wHolder.getMap().get(strBuf) == null) ? Integer.valueOf(0) : wHolder.getMap().get(strBuf);
-			
-			if(strBufLen != null && strBufLen.intValue() > 0){
+
+			if(strBufLen.intValue() > 0){
 				
 				if((strBufLen+sum) == len){
 					
