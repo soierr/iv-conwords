@@ -165,7 +165,7 @@ public class CallableLetterProcessing implements Callable<CallablerResult>{
 					
 				}else{
 					
-					if (isConcatRecur(i+1, i+1, len, str, dictionary)){
+					if (isConcatRecur(i+1, strBufLen+sum, len, str, dictionary)){
 						return (isSearchCompleted = true);
 					}
 				}				
