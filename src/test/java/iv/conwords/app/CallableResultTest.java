@@ -59,8 +59,8 @@ public class CallableResultTest{
 	@Test
 	public void callTest(){
 		
-		CallableLetterProcessing callable = new CallableLetterProcessing('a', dictionary);		
-		int i = callable.isConcatWord("aah", "aah".length(), dictionary);
+		CallableLetterProcessing callable = new CallableLetterProcessing('e', dictionary);		
+		int i = callable.isConcatWord("ethylenediaminetetraacetates", "ethylenediaminetetraacetates".length(), dictionary);
 		System.out.println(i);
 		
 	}
